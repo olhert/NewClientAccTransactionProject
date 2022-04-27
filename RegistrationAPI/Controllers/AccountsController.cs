@@ -36,10 +36,6 @@ namespace RegistrationAPI.Controllers
         [HttpGet("/accounts/deposit/{accountId}/{sumOfDeposit}")]
         public IActionResult Deposit(string accountId, double sumOfDeposit)
         {
-            if (accountId == null)
-            {
-                return Ok(new StatusModel{Status = "account is not found."});
-            }
             if (sumOfDeposit >= 0)
             {
                 _accountStore.Deposit(accountId, sumOfDeposit);
@@ -72,16 +68,6 @@ namespace RegistrationAPI.Controllers
         [HttpGet("/accounts/transaction/{idOfSender}/{sumOfTransaction}/{idOfRecipient}")]
         public IActionResult Transaction(string idOfSender, double sumOfTransaction, string idOfRecipient)
         {
-            if (idOfSender == null)
-            {
-                return Ok(new StatusModel{Status = " Sender's account is not found."});
-            }
-
-            if (idOfRecipient == null)
-            {
-                return Ok(new StatusModel{Status = "Recipient's account is not found."});
-            }
-
             if (sumOfTransaction >= 0)
             {
                 _accountStore.Transaction(idOfSender, sumOfTransaction, idOfRecipient);

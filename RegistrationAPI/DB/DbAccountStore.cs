@@ -50,22 +50,26 @@ namespace RegistrationAPI
         {
             using var connection = new NpgsqlConnection(connectionString);
             
-            var account = connection.Query<Account>("select * from accounts where accountid = @accountId", new{accountId});
+            var account = connection.QueryFirstOrDefault<Account>("select * from accounts where accountid = @accountId", new{accountId});
 
-            if (account != null)
+            if (account == null)
             {
-                connection.Execute("select deposit (@accountId, @sumOfDeposit);", new{accountId, sumOfDeposit});
+                return;
             }
-            else
-            {
-                Console.WriteLine("account is not found");
-            }
-           
+            
+            connection.Execute("select deposit (@accountId, @sumOfDeposit);", new{accountId, sumOfDeposit});
         }
 
         public void Withdrawal(string accountId, double sumOfWithdrawal)
         {
             using var connection = new NpgsqlConnection(connectionString);
+            
+            var account = connection.QueryFirstOrDefault<Account>("select * from accounts where accountid = @accountId", new{accountId});
+
+            if (account == null)
+            {
+                return;
+            }
             
             connection.Execute("select withdrawal (@accountId, @sumOfWithdrawal);", new{accountId, sumOfWithdrawal});
         }
@@ -74,6 +78,20 @@ namespace RegistrationAPI
         {
             using var connection = new NpgsqlConnection(connectionString);
 
+            var senderAccount = connection.QueryFirstOrDefault<Account>("select * from accounts where accountid = @idOfSender", new{idOfSender});
+
+            if (senderAccount == null)
+            {
+                return;
+            }
+            
+            var recipientAccount = connection.QueryFirstOrDefault<Account>("select * from accounts where accountid = @idOfRecipient", new{idOfRecipient});
+
+            if (recipientAccount == null)
+            {
+                return;
+            }
+            
             var Transaction = new Transaction
             {
                 DateTime = DateTime.Now,
