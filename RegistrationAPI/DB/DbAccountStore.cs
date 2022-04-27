@@ -103,5 +103,7 @@ namespace RegistrationAPI
             connection.Execute("select transaction (@idOfSender, @idOfRecipient, @sumOfTransaction);", new{idOfSender, idOfRecipient, sumOfTransaction});
             connection.Execute("insert into transactions (senderid, recipientid, sumoftransaction, datetime) values (@SenderId,  @RecipientId, @SumOfTransaction, @DateTime)", Transaction);
         }
+
+        
     }
 }
